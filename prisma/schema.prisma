@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model users {
+  id            Int             @id @default(autoincrement())
+  username      String
+  email         String          @unique
+  password      String?
+  course        String?
+  created_at    DateTime        @default(now())
+  
+  group_members Group_Members[]
+}
+
+model Student_Group {
+  id                Int             @id @default(autoincrement())
+  theme             String
+  university_course String?
+  description       String?
+  modality          String?
+  created_at        DateTime        @default(now())
+  update_at         DateTime        @updatedAt
+  deleted_at        DateTime?
+  
+  members           Group_Members[]
+  events            Event[]
+  warnings          Warning[]
+  materials         Material[]
+}
+
+model Group_Members {
+  user_id   Int
+  group_id  Int
+  role      String
+  joined_at DateTime @default(now())
+
+  user      users         @relation(fields: [user_id], references: [id])
+  group     Student_Group @relation(fields: [group_id], references: [id])
+
+  @@id([user_id, group_id])
+}
+
+model Event {
+  id                  Int           @id @default(autoincrement())
+  id_student_group    Int
+  title               String
+  date_time_event     DateTime
+  local_or_link_event String
+  created_at          DateTime      @default(now())
+  update_at           DateTime      @updatedAt
+  deleted_at          DateTime?
+
+  group               Student_Group @relation(fields: [id_student_group], references: [id])
+}
+
+model Warning {
+  id_warning       Int           @id @default(autoincrement())
+  id_student_group Int
+  content          String
+  post_date        DateTime      @default(now())
+  created_at       DateTime      @default(now())
+  update_at        DateTime      @updatedAt
+  deleted_at       DateTime?
+
+  group            Student_Group @relation(fields: [id_student_group], references: [id])
+}
+
+model Material {
+  id_material      Int           @id @default(autoincrement())
+  id_student_group Int
+  title            String
+  external_url     String
+  created_at       DateTime      @default(now())
+  update_at        DateTime      @updatedAt
+  deleted_at       DateTime?
+
+  group            Student_Group @relation(fields: [id_student_group], references: [id])
+}
