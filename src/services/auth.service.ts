@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 import prisma from "../data/prismaClient.js";
 
 type RegisterInput = {
@@ -6,6 +7,11 @@ type RegisterInput = {
   email: string;
   password: string;
   course?: string;
+};
+
+type LoginInput = {
+  email: string;
+  password: string;
 };
 
 type HttpError = Error & { statusCode: number };
@@ -41,6 +47,42 @@ class AuthService {
     });
 
     return user;
+  }
+
+  async login({ email, password }: LoginInput) {
+    const user = await prisma.users.findUnique({
+      where: { email },
+    });
+
+    if (!user || !user.password) {
+      const error = new Error("Invalid email or password") as HttpError;
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      const error = new Error("Invalid email or password") as HttpError;
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      process.env.JWT_SECRET || "default_secret",
+      { expiresIn: "1d" }
+    );
+
+    return {
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        course: user.course,
+      },
+      token,
+    };
   }
 }
 
