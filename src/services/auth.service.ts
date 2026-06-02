@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { getJwtSecret } from "../config/jwt.js";
+
 import prisma from "../data/prismaClient.js";
 
 type RegisterInput = {
@@ -59,6 +60,7 @@ class AuthService {
   async login({ email, password }: LoginInput) {
     const user = await prisma.users.findUnique({
       where: { email },
+
       select: {
         id: true,
         username: true,
@@ -114,7 +116,46 @@ class AuthService {
     }
 
     return user;
+  
   }
+
+  async updateProfile(userId: number, data: { username?: string; course?: string; email?: string }) {
+  const user = await prisma.users.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    const error = new Error("User not found") as HttpError;
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (data.email && data.email !== user.email) {
+    const emailExists = await prisma.users.findUnique({
+      where: { email: data.email },
+    });
+
+    if (emailExists) {
+      const error = new Error("Email already in use") as HttpError;
+      error.statusCode = 409;
+      throw error;
+    }
+  }
+
+  return await prisma.users.update({
+    where: { id: userId },
+    data,
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      course: true,
+      created_at: true,
+    },
+  });
 }
+
+}
+
 
 export default new AuthService();

@@ -97,6 +97,31 @@ class AuthController {
       return res.status(500).json({ error: "Internal server error" });
     }
   }
+
+  async updateProfile(req: Request, res: Response) {
+  try {
+    if (!req.userId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { username, email, course } = req.body;
+    const updatedUser = await authService.updateProfile(req.userId, {
+      username,
+      email,
+      course,
+    });
+
+    return res.status(200).json(updatedUser);
+  } catch (error) {
+    const typedError = error as HttpError;
+    if (typedError.statusCode) {
+      return res.status(typedError.statusCode).json({ error: typedError.message });
+    }
+    return res.status(500).json({ error: "Internal server error" });
+  }
+}
+
+
 }
 
 export default new AuthController();

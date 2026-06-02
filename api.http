@@ -51,7 +51,7 @@ Content-Type: {{contentType}}
 # --- Autenticação (protegida) ---
 
 ### Perfil do usuário logado (requer token)
-GET {{baseUrl}}/api/auth/me
+GET {{baseUrl}}/api/auth/me 
 Authorization: Bearer {{authToken}}
 
 # --- Exemplos de erro (opcional) ---
@@ -71,3 +71,13 @@ GET {{baseUrl}}/api/auth/me
 ### Perfil — token inválido (401)
 GET {{baseUrl}}/api/auth/me
 Authorization: Bearer token-invalido
+
+
+PUT {{baseUrl}}/api/auth/profile
+Authorization: Bearer {{authToken}}
+Content-Type: {{contentType}}
+
+{
+  "username": "Novo Nome de Usuario",
+  "course": "Sistemas de Informação"
+}
