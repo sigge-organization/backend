@@ -72,7 +72,7 @@ GET {{baseUrl}}/api/auth/me
 GET {{baseUrl}}/api/auth/me
 Authorization: Bearer token-invalido
 
-
+### Profile - atualiza profile
 PUT {{baseUrl}}/api/auth/profile
 Authorization: Bearer {{authToken}}
 Content-Type: {{contentType}}
