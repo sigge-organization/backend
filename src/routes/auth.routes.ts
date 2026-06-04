@@ -8,6 +8,8 @@ authRoutes.post("/register", authController.register);
 authRoutes.post("/login", authController.login);
 authRoutes.get("/me", authenticate, authController.me);
 authRoutes.put("/profile", authenticate, authController.updateProfile);
+authRoutes.post("/verify-password", authenticate, authController.verifyPassword);
+authRoutes.put("/change-password", authenticate, authController.changePassword);
 
 
 

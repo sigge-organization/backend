@@ -120,42 +120,82 @@ class AuthService {
   }
 
   async updateProfile(userId: number, data: { username?: string; course?: string; email?: string }) {
-  const user = await prisma.users.findUnique({
-    where: { id: userId },
-  });
-
-  if (!user) {
-    const error = new Error("User not found") as HttpError;
-    error.statusCode = 404;
-    throw error;
-  }
-
-  if (data.email && data.email !== user.email) {
-    const emailExists = await prisma.users.findUnique({
-      where: { email: data.email },
+    const user = await prisma.users.findUnique({
+      where: { id: userId },
     });
 
-    if (emailExists) {
-      const error = new Error("Email already in use") as HttpError;
-      error.statusCode = 409;
+    if (!user) {
+      const error = new Error("User not found") as HttpError;
+      error.statusCode = 404;
       throw error;
     }
+
+    if (data.email && data.email !== user.email) {
+      const emailExists = await prisma.users.findUnique({
+        where: { email: data.email },
+      });
+
+      if (emailExists) {
+        const error = new Error("Email already in use") as HttpError;
+        error.statusCode = 409;
+        throw error;
+      }
+    }
+
+    return await prisma.users.update({
+      where: { id: userId },
+      data,
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        course: true,
+        created_at: true,
+      },
+    });
   }
 
-  return await prisma.users.update({
-    where: { id: userId },
-    data,
-    select: {
-      id: true,
-      username: true,
-      email: true,
-      course: true,
-      created_at: true,
-    },
-  });
-}
+  async verifyPassword(userId: number, currentPassword: string) {
+    const user = await prisma.users.findUnique({
+      where: { id: userId },
+    });
 
-}
+    if (!user || !user.password) {
+      return { valid: false };
+    }
 
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+    return { valid: passwordMatch };
+  }
+
+  async changePassword(userId: number, currentPassword: string, newPassword: string) {
+    const user = await prisma.users.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user || !user.password) {
+      const error = new Error("User not found") as HttpError;
+      error.statusCode = 404;
+      throw error;
+    }
+
+    const passwordMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if (!passwordMatch) {
+      const error = new Error("Senha atual incorreta") as HttpError;
+      error.statusCode = 401;
+      throw error;
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.users.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    return { success: true };
+  }
+}
 
 export default new AuthService();
