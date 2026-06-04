@@ -1,5 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { getJwtSecret } from "../config/jwt.js";
+
 import prisma from "../data/prismaClient.js";
 
 type RegisterInput = {
@@ -15,6 +17,12 @@ type LoginInput = {
 };
 
 type HttpError = Error & { statusCode: number };
+
+function unauthorizedError(): HttpError {
+  const error = new Error("Invalid email or password") as HttpError;
+  error.statusCode = 401;
+  return error;
+}
 
 class AuthService {
   async register({ username, email, password, course }: RegisterInput) {
@@ -52,27 +60,30 @@ class AuthService {
   async login({ email, password }: LoginInput) {
     const user = await prisma.users.findUnique({
       where: { email },
+
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        password: true,
+        course: true,
+        created_at: true,
+      },
     });
 
-    if (!user || !user.password) {
-      const error = new Error("Invalid email or password") as HttpError;
-      error.statusCode = 401;
-      throw error;
+    if (!user?.password) {
+      throw unauthorizedError();
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordValid) {
-      const error = new Error("Invalid email or password") as HttpError;
-      error.statusCode = 401;
-      throw error;
+    if (!passwordMatch) {
+      throw unauthorizedError();
     }
 
-    const token = jwt.sign(
-      { id: user.id, username: user.username },
-      process.env.JWT_SECRET || "default_secret",
-      { expiresIn: "1d" }
-    );
+    const token = jwt.sign({ sub: user.id }, getJwtSecret(), {
+      expiresIn: "7d",
+    });
 
     return {
       user: {
@@ -80,10 +91,71 @@ class AuthService {
         username: user.username,
         email: user.email,
         course: user.course,
+        created_at: user.created_at,
       },
       token,
     };
   }
+
+  async getProfile(userId: number) {
+    const user = await prisma.users.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        course: true,
+        created_at: true,
+      },
+    });
+
+    if (!user) {
+      const error = new Error("User not found") as HttpError;
+      error.statusCode = 404;
+      throw error;
+    }
+
+    return user;
+  
+  }
+
+  async updateProfile(userId: number, data: { username?: string; course?: string; email?: string }) {
+  const user = await prisma.users.findUnique({
+    where: { id: userId },
+  });
+
+  if (!user) {
+    const error = new Error("User not found") as HttpError;
+    error.statusCode = 404;
+    throw error;
+  }
+
+  if (data.email && data.email !== user.email) {
+    const emailExists = await prisma.users.findUnique({
+      where: { email: data.email },
+    });
+
+    if (emailExists) {
+      const error = new Error("Email already in use") as HttpError;
+      error.statusCode = 409;
+      throw error;
+    }
+  }
+
+  return await prisma.users.update({
+    where: { id: userId },
+    data,
+    select: {
+      id: true,
+      username: true,
+      email: true,
+      course: true,
+      created_at: true,
+    },
+  });
 }
+
+}
+
 
 export default new AuthService();
