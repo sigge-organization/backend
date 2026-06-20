@@ -17,6 +17,9 @@ export class GetMeController {
 
         } catch (error: any) {
             console.error('Erro ao buscar dados do usuário logado:', error);
+            if (error.message === 'Usuário não encontrado.') {
+                return res.status(401).json({ error: 'Usuário não encontrado ou sessão inválida.' });
+            }
             return res.status(500).json({ error: 'Erro interno do servidor ao buscar dados do usuário.' });
         }
     }

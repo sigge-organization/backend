@@ -11,8 +11,10 @@ import { CreatePostController } from '../controllers/posts/CreatePostController'
 import { ListPostsController } from '../controllers/posts/ListPostsController';
 import { CreateMaterialController } from '../controllers/materials/CreateMaterialController';
 import { ListMaterialsController } from '../controllers/materials/ListMaterialsController';
+import { RecentStudentGroupController } from '../controllers/student_groups/RecentStudentGroupController';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
 import { isGroupMember } from '../middlewares/isGroupMember';
+import { isGroupAdmin } from '../middlewares/isGroupAdmin';
 
 const studentGroupRoutes = Router();
 
@@ -35,9 +37,10 @@ studentGroupRoutes.use(isAuthenticated);
 studentGroupRoutes.post('/join', joinStudentGroupController.handle);
 studentGroupRoutes.post('/', createStudentGroupController.handle);
 studentGroupRoutes.get('/', listStudentGroupController.handle);
+studentGroupRoutes.get('/recent', new RecentStudentGroupController().handle);
 studentGroupRoutes.get('/:id', getStudentGroupController.handle);
-studentGroupRoutes.put('/:id', updateStudentGroupController.handle);
-studentGroupRoutes.delete('/:id', deleteStudentGroupController.handle);
+studentGroupRoutes.put('/:id', isGroupAdmin, updateStudentGroupController.handle);
+studentGroupRoutes.delete('/:id', isGroupAdmin, deleteStudentGroupController.handle);
 
 studentGroupRoutes.post('/:studentGroupId/events', isGroupMember, createEventController.handle);
 studentGroupRoutes.get('/:studentGroupId/events', isGroupMember, listEventsController.handle);

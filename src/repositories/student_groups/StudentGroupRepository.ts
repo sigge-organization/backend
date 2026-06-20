@@ -34,12 +34,23 @@ export class StudentGroupRepository {
     });
   }
 
-  async findAll() {
+  async findAll(userId: string) {
     return prisma.student_Group.findMany({
-      where: { deleted_at: null },
+      where: { 
+        deleted_at: null,
+        members: {
+          some: {
+            user_id: userId
+          }
+        }
+      },
       include: {
         _count: {
           select: { members: true }
+        },
+        members: {
+          where: { user_id: userId },
+          select: { role: true, user_id: true }
         }
       }
     });

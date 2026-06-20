@@ -3,7 +3,7 @@ import { StudentGroupRepository } from '../../repositories/student_groups/Studen
 export class ListStudentGroupService {
   constructor(private repository: StudentGroupRepository) {}
 
-  async execute() {
-    return this.repository.findAll();
+  async execute(userId: string) {
+    return this.repository.findAll(userId);
   }
 }
