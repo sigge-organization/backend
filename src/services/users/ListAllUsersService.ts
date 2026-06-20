@@ -1,4 +1,3 @@
-// src/services/users/ListAllUsersService.ts
 import { prisma } from '../../repositories/users/AuthUserRepository';
 
 interface UserListItem {

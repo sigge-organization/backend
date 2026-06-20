@@ -1,4 +1,3 @@
-// src/repositories/users/CreateUserRepository.ts
 import { prisma } from './AuthUserRepository'; // Reaproveitando a instância do prisma
 import { Users } from '../../generated/prisma';
 

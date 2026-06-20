@@ -1,4 +1,3 @@
-// src/controllers/users/ListAllUsersController.ts
 import { Request, Response } from 'express';
 import { ListAllUsersService } from '../../services/users/ListAllUsersService';
 

@@ -1,4 +1,3 @@
-// src/utils/EmailSender.ts
 import nodemailer from 'nodemailer';
 import 'dotenv/config';
 

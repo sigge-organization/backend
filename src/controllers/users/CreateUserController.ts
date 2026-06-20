@@ -1,4 +1,3 @@
-// src/controllers/users/CreateUserController.ts
 import { Request, Response } from 'express';
 import { CreateUserService } from '../../services/users/CreateUserService';
 import { CreateUserRepository } from '../../repositories/users/CreateUserRepository';

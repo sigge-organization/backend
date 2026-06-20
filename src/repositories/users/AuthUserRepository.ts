@@ -1,4 +1,3 @@
-// src/prisma/index.ts
 import { PrismaClient } from '../../generated/prisma';
 import type { Users } from '../../generated/prisma';
 const prisma = new PrismaClient();

@@ -1,4 +1,3 @@
-// src/controllers/users/GetMeController.ts
 import { Request, Response } from 'express';
 import { GetMeService } from '../../services/users/GetMeService';
 
@@ -11,7 +10,7 @@ export class GetMeController {
         }
 
         try {
-            const service = new GetMeService(); // Não precisa de repositório, usa o Prisma diretamente
+            const service = new GetMeService();
             const user = await service.execute(userId);
 
             return res.status(200).json(user);

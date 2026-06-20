@@ -1,4 +1,3 @@
-// src/routes/userRoutes.ts
 import { Router } from 'express';
 import { isAuthenticated } from '../middlewares/isAuthenticated';
 // Controllers Existentes
@@ -9,7 +8,8 @@ import { ListAllUsersController } from '../controllers/users/ListAllUserControll
 import { EditUserController } from '../controllers/users/EditUserController';
 import { LogoutUserController } from '../controllers/users/LogoutUserController';
 import { PasswordRecoveryController } from '../controllers/users/PasswordRecoveryController';
-
+import { ChangePasswordController } from '../controllers/users/ChangePasswordController';
+import { VerifyPasswordController } from '../controllers/users/VerifyPasswordController';
 const userRoutes = Router();
 
 const authUserController = new AuthUserController();
@@ -34,6 +34,12 @@ userRoutes.get('/all', isAuthenticated, listAllUsersController.handle);
 // Edição de Perfil
 const editUserController = new EditUserController();
 userRoutes.put('/edit', isAuthenticated, editUserController.handle);
+
+// Alteração de Senha (Autenticado)
+const changePasswordController = new ChangePasswordController();
+const verifyPasswordController = new VerifyPasswordController();
+userRoutes.post('/change-password', isAuthenticated, changePasswordController.handle);
+userRoutes.post('/verify-password', isAuthenticated, verifyPasswordController.handle);
 
 // Recuperação de Senha
 

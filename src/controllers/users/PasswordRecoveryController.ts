@@ -1,4 +1,3 @@
-// src/controllers/users/PasswordRecoveryController.ts
 import { Request, Response } from "express";
 import { ForgotPasswordService } from "../../services/users/ForgotPasswordService";
 import { ResetPasswordService } from "../../services/users/ResetPasswordService";
