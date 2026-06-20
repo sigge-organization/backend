@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import { userRoutes } from './routes/userRoutes';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3333;
 
 const corsOptions = {
   origin: [
