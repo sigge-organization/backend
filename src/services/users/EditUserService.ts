@@ -6,10 +6,11 @@ interface EditUserRequest {
   name?: string;
   email?: string;
   password?: string;
+  course?: string;
 }
 
 export class EditUserService {
-  async execute({ userId, name, email, password }: EditUserRequest) {
+  async execute({ userId, name, email, password, course }: EditUserRequest) {
     const user = await prisma.users.findUnique({
       where: { id: userId },
     });
@@ -21,6 +22,7 @@ export class EditUserService {
     const data: any = {};
 
     if (name) data.name = name;
+    if (course !== undefined) data.course = course;
     
     if (email && email !== user.email) {
       const emailExists = await prisma.users.findUnique({

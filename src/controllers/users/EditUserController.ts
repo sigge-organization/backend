@@ -4,7 +4,7 @@ import { EditUserService } from "../../services/users/EditUserService";
 export class EditUserController {
   async handle(req: Request, res: Response) {
     const userId = req.user_id;
-    const { name, email, password } = req.body;
+    const { name, email, password, course } = req.body;
 
     const editUserService = new EditUserService();
 
@@ -18,6 +18,7 @@ export class EditUserController {
         name,
         email,
         password,
+        course,
       });
 
       return res.json(user);
