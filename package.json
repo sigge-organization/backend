@@ -1,46 +1,36 @@
 {
-  "name": "sigge-backend",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "dist/server.js",
-  "type": "module",
+  "description": "This is project SIGGE",
+  "main": "server.ts",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "npx prisma generate && tsc -p tsconfig.json",
-    "start": "npx prisma migrate deploy && node dist/server.js",
-    "test": "vitest run"
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/sigge-organization/sigge-backend.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/sigge-organization/sigge-backend/issues"
-  },
-  "homepage": "https://github.com/sigge-organization/sigge-backend#readme",
-  "dependencies": {
-    "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
-    "bcrypt": "^6.0.0",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "jsonwebtoken": "^9.0.3",
-    "pg": "^8.21.0"
-  },
+  "author": "Luiz Felipe & Jhonnatas Jorge",
+  "license": "MIT",
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/nodemailer": "^8.0.1",
+    "prisma": "^6.7.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^6.0.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0",
     "@types/bcrypt": "^6.0.0",
     "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.4",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/node": "^24.10.1",
-    "@types/pg": "^8.15.6",
+    "@types/express": "^5.0.6",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
     "dotenv": "^17.4.2",
-    "prisma": "^7.8.0",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.7"
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^9.0.0",
+    "pg": "^8.21.0"
   }
 }

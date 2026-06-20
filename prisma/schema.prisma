@@ -4,85 +4,124 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client-js" 
+  output = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
-model users {
-  id            Int             @id @default(autoincrement())
-  username      String
-  email         String          @unique
-  password      String?
-  course        String?
-  created_at    DateTime        @default(now())
-  
-  group_members Group_Members[]
+enum GroupRole {
+  ADMIN 
+  STUDENT
 }
+
+enum Modality {
+  PRESENTIAL
+  ONLINE
+  HYBRID
+}
+
+
+model Users {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+  name     String?
+  course   String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  passwordResetCode    String?   // criado p/ o reset de senha
+  passwordResetExpires DateTime? // criado p/ o reset de senha
+
+  groupMembers Group_Members[]
+  posts        Post[]
+  materials    Material[]
+
+  @@map("users")
+}
+
 
 model Student_Group {
-  id                Int             @id @default(autoincrement())
+  id                String             @id @default(uuid())
   theme             String
   university_course String?
   description       String?
-  modality          String?
+  modality          Modality @default(ONLINE)
   created_at        DateTime        @default(now())
-  update_at         DateTime        @updatedAt
+  updated_at        DateTime        @updatedAt
   deleted_at        DateTime?
   
   members           Group_Members[]
   events            Event[]
-  warnings          Warning[]
+  posts             Post[]
   materials         Material[]
+
+  @@map("student_groups")
 }
+
 
 model Group_Members {
-  user_id   Int
-  group_id  Int
-  role      String
+  user_id   String
+  group_id  String
+  role GroupRole @default(STUDENT)
   joined_at DateTime @default(now())
 
-  user      users         @relation(fields: [user_id], references: [id])
+  user      Users         @relation(fields: [user_id], references: [id])
   group     Student_Group @relation(fields: [group_id], references: [id])
 
-  @@id([user_id, group_id])
+  @@id([user_id, group_id]) // Chave composta
+
+  @@map("group_members")
 }
 
+
 model Event {
-  id                  Int           @id @default(autoincrement())
-  id_student_group    Int
+  id                  String           @id @default(uuid())
+  studentGroupId    String
   title               String
   date_time_event     DateTime
   local_or_link_event String
   created_at          DateTime      @default(now())
-  update_at           DateTime      @updatedAt
+  updated_at          DateTime      @updatedAt
   deleted_at          DateTime?
 
-  group               Student_Group @relation(fields: [id_student_group], references: [id])
+  group               Student_Group @relation(fields: [studentGroupId], references: [id])
+
+  @@map("events")
 }
 
-model Warning {
-  id_warning       Int           @id @default(autoincrement())
-  id_student_group Int
+
+model Post {
+  id      String           @id @default(uuid())
+  authorId String @map("author_id")
+  author   Users  @relation(fields: [authorId], references: [id])
+  studentGroupId String
   content          String
   post_date        DateTime      @default(now())
-  created_at       DateTime      @default(now())
-  update_at        DateTime      @updatedAt
+  updated_at       DateTime      @updatedAt
   deleted_at       DateTime?
 
-  group            Student_Group @relation(fields: [id_student_group], references: [id])
+  group            Student_Group @relation(fields: [studentGroupId], references: [id])
+
+  @@map("posts")
 }
 
+
 model Material {
-  id_material      Int           @id @default(autoincrement())
-  id_student_group Int
+  id               String  @id @default(uuid())
+  uploadedById String @map("uploaded_by_id")
+  uploadedBy   Users  @relation(fields: [uploadedById], references: [id])
+  studentGroupId   String  @map("student_group_id")
   title            String
   external_url     String
   created_at       DateTime      @default(now())
-  update_at        DateTime      @updatedAt
+  updated_at        DateTime      @updatedAt
   deleted_at       DateTime?
 
-  group            Student_Group @relation(fields: [id_student_group], references: [id])
+  group Student_Group @relation(fields: [studentGroupId], references: [id])
+
+  @@map("materials")
 }
