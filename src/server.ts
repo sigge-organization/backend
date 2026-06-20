@@ -2,10 +2,13 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import http from 'http';
+import { Server } from 'socket.io';
 import { userRoutes } from './routes/userRoutes';
 import { studentGroupRoutes } from './routes/studentGroupRoutes';
 
 const app = express();
+const server = http.createServer(app);
 const PORT = process.env.PORT || 3333;
 
 const corsOptions = {
@@ -22,11 +25,35 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
+const io = new Server(server, {
+  cors: corsOptions
+});
+
+app.set('io', io);
+
+io.on('connection', (socket) => {
+  console.log(`🔌 Novo usuário conectado via WebSocket: ${socket.id}`);
+
+  socket.on('join_group', (groupId) => {
+    socket.join(groupId);
+    console.log(`👤 Usuário ${socket.id} entrou na sala do grupo: ${groupId}`);
+  });
+
+  socket.on('leave_group', (groupId) => {
+    socket.leave(groupId);
+    console.log(`👋 Usuário ${socket.id} saiu da sala do grupo: ${groupId}`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`❌ Usuário desconectado: ${socket.id}`);
+  });
+});
+
 app.use('/users', userRoutes);
 app.use('/student-groups', studentGroupRoutes);
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor SIGGE rodando na porta ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`🚀 Servidor SIGGE rodando na porta ${PORT} (com WebSockets)`);
   
   if (process.env.NODE_ENV === 'development') {
     console.log(`Link local: http://localhost:${PORT}`);

@@ -1,0 +1,22 @@
+import { PrismaClient } from '../../generated/prisma';
+const prisma = new PrismaClient();
+
+export interface CreatePostDTO {
+  authorId: string;
+  studentGroupId: string;
+  content: string;
+}
+
+export class PostRepository {
+  async create(data: CreatePostDTO) {
+    return prisma.post.create({ data });
+  }
+
+  async findByGroupId(studentGroupId: string) {
+    return prisma.post.findMany({
+      where: { studentGroupId, deleted_at: null },
+      include: { author: { select: { id: true, name: true, email: true } } },
+      orderBy: { post_date: 'desc' }
+    });
+  }
+}
