@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { userRoutes } from './routes/userRoutes';
+import { studentGroupRoutes } from './routes/studentGroupRoutes';
 
 const app = express();
 const PORT = process.env.PORT || 3333;
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use('/users', userRoutes);
+app.use('/student-groups', studentGroupRoutes);
 
 app.listen(PORT, () => {
   console.log(`🚀 Servidor SIGGE rodando na porta ${PORT}`);
