@@ -50,6 +50,8 @@ model Student_Group {
   university_course String?
   description       String?
   modality          Modality @default(ONLINE)
+  joinCode          String   @unique
+  password          String?
   created_at        DateTime        @default(now())
   updated_at        DateTime        @updatedAt
   deleted_at        DateTime?

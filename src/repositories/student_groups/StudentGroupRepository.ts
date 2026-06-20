@@ -7,6 +7,8 @@ export interface CreateStudentGroupDTO {
   description?: string;
   modality?: Modality;
   creator_id: string;
+  password?: string;
+  joinCode: string;
 }
 
 export interface UpdateStudentGroupDTO {
@@ -52,6 +54,29 @@ export class StudentGroupRepository {
         }
       }
     });
+  }
+
+  async findByJoinCode(joinCode: string) {
+    return prisma.student_Group.findFirst({
+      where: { joinCode, deleted_at: null }
+    });
+  }
+
+  async addMember(groupId: string, userId: string) {
+    return prisma.group_Members.create({
+      data: {
+        group_id: groupId,
+        user_id: userId,
+        role: "STUDENT"
+      }
+    });
+  }
+
+  async isMember(groupId: string, userId: string) {
+    const member = await prisma.group_Members.findFirst({
+      where: { group_id: groupId, user_id: userId }
+    });
+    return !!member;
   }
 
   async update(id: string, data: UpdateStudentGroupDTO) {

@@ -4,7 +4,7 @@ import { StudentGroupRepository } from '../../repositories/student_groups/Studen
 
 export class CreateStudentGroupController {
   async handle(req: Request, res: Response): Promise<Response> {
-    const { theme, university_course, description, modality } = req.body;
+    const { theme, university_course, description, modality, password } = req.body;
     const user_id = req.user_id;
 
     if (!user_id) {
@@ -24,6 +24,7 @@ export class CreateStudentGroupController {
         university_course,
         description,
         modality,
+        password,
         creator_id: user_id
       });
 
