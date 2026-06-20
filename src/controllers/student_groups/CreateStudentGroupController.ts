@@ -5,6 +5,11 @@ import { StudentGroupRepository } from '../../repositories/student_groups/Studen
 export class CreateStudentGroupController {
   async handle(req: Request, res: Response): Promise<Response> {
     const { theme, university_course, description, modality } = req.body;
+    const user_id = req.user_id;
+
+    if (!user_id) {
+      return res.status(401).json({ error: 'Usuário não autenticado.' });
+    }
 
     if (!theme) {
       return res.status(400).json({ error: 'O tema do grupo é obrigatório.' });
@@ -18,7 +23,8 @@ export class CreateStudentGroupController {
         theme,
         university_course,
         description,
-        modality
+        modality,
+        creator_id: user_id
       });
 
       return res.status(201).json(group);

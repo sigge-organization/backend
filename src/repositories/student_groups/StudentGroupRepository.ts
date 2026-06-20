@@ -6,6 +6,7 @@ export interface CreateStudentGroupDTO {
   university_course?: string;
   description?: string;
   modality?: Modality;
+  creator_id: string;
 }
 
 export interface UpdateStudentGroupDTO {
@@ -17,7 +18,18 @@ export interface UpdateStudentGroupDTO {
 
 export class StudentGroupRepository {
   async create(data: CreateStudentGroupDTO) {
-    return prisma.student_Group.create({ data });
+    const { creator_id, ...groupData } = data;
+    return prisma.student_Group.create({
+      data: {
+        ...groupData,
+        members: {
+          create: {
+            user_id: creator_id,
+            role: "ADMIN"
+          }
+        }
+      }
+    });
   }
 
   async findAll() {
