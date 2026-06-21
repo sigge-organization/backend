@@ -1,5 +1,5 @@
-import { PrismaClient, Modality } from '@prisma/client';
-const prisma = new PrismaClient();
+import { Modality } from '@prisma/client';
+import prisma from '../../prisma';
 
 export interface CreateStudentGroupDTO {
   theme: string;

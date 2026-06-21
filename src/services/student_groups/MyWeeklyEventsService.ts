@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import prisma from '../../prisma';
 
 function getStartOfWeek(date: Date) {
   const d = new Date(date);

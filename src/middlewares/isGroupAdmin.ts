@@ -1,7 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '../prisma';
 
 export async function isGroupAdmin(req: Request, res: Response, next: NextFunction) {
   const user_id = req.user_id;

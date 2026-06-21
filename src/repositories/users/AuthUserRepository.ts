@@ -1,7 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import type { Users } from '@prisma/client';
-const prisma = new PrismaClient();
-
+import prisma from '../../prisma';
 export { prisma };
 
 

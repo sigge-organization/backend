@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import prisma from '../../prisma';
 
 class MyAllEventsService {
   async execute(user_id: string) {

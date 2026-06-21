@@ -29,6 +29,10 @@ export class CreateUserController {
         return res.status(409).json({ error: error.message });
       }
       
+      if (error.message.includes('nome') || error.message.includes('curso')) {
+        return res.status(400).json({ error: error.message });
+      }
+      
       console.error(error);
       return res.status(500).json({ error: 'Erro interno ao criar usuário.' });
     }
