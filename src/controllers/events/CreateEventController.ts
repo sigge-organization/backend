@@ -7,6 +7,10 @@ export class CreateEventController {
     const studentGroupId = req.params.studentGroupId as string;
     const { title, date_time_event, local_or_link_event } = req.body;
 
+    const user_id = req.user_id;
+
+    if (!user_id) return res.status(401).json({ error: 'Unauthorized' });
+
     try {
       const repository = new EventRepository();
       const service = new CreateEventService(repository);
@@ -14,7 +18,8 @@ export class CreateEventController {
         studentGroupId,
         title,
         date_time_event: new Date(date_time_event),
-        local_or_link_event
+        local_or_link_event,
+        createdById: user_id
       });
       return res.status(201).json(event);
     } catch (error: any) {

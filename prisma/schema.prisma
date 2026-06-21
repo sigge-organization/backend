@@ -37,6 +37,7 @@ model Users {
   groupMembers Group_Members[]
   posts        Post[]
   materials    Material[]
+  events       Event[]
 
   @@map("users")
 }
@@ -81,6 +82,7 @@ model Group_Members {
 model Event {
   id                  String           @id @default(uuid())
   studentGroupId    String
+  createdById         String?       @map("created_by_id")
   title               String
   date_time_event     DateTime
   local_or_link_event String
@@ -89,6 +91,7 @@ model Event {
   deleted_at          DateTime?
 
   group               Student_Group @relation(fields: [studentGroupId], references: [id])
+  createdBy           Users?        @relation(fields: [createdById], references: [id])
 
   @@map("events")
 }

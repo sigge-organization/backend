@@ -1,8 +1,12 @@
 import prisma from '../../prisma';
 
 class MyAllMaterialsService {
-  async execute(user_id: string) {
+  async execute(user_id: string, page: number = 1, limit: number = 20) {
+    const skip = (page - 1) * limit;
+
     const materials = await prisma.material.findMany({
+      skip,
+      take: limit,
       where: {
         deleted_at: null,
         group: {

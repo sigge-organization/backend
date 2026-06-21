@@ -7,10 +7,14 @@ import { DeleteStudentGroupController } from '../controllers/student_groups/Dele
 import { JoinStudentGroupController } from '../controllers/student_groups/JoinStudentGroupController';
 import { CreateEventController } from '../controllers/events/CreateEventController';
 import { ListEventsController } from '../controllers/events/ListEventsController';
+import { UpdateEventController } from '../controllers/events/UpdateEventController';
+import { DeleteEventController } from '../controllers/events/DeleteEventController';
 import { CreatePostController } from '../controllers/posts/CreatePostController';
 import { ListPostsController } from '../controllers/posts/ListPostsController';
 import { CreateMaterialController } from '../controllers/materials/CreateMaterialController';
 import { ListMaterialsController } from '../controllers/materials/ListMaterialsController';
+import { UpdateMaterialController } from '../controllers/materials/UpdateMaterialController';
+import { DeleteMaterialController } from '../controllers/materials/DeleteMaterialController';
 import { MyWeeklyEventsController } from '../controllers/student_groups/MyWeeklyEventsController';
 import { MyRecentMaterialsController } from '../controllers/student_groups/MyRecentMaterialsController';
 import { RecentStudentGroupController } from '../controllers/student_groups/RecentStudentGroupController';
@@ -52,11 +56,15 @@ studentGroupRoutes.delete('/:id', isGroupAdmin, deleteStudentGroupController.han
 
 studentGroupRoutes.post('/:studentGroupId/events', isGroupMember, createEventController.handle);
 studentGroupRoutes.get('/:studentGroupId/events', isGroupMember, listEventsController.handle);
+studentGroupRoutes.put('/:studentGroupId/events/:eventId', isGroupMember, new UpdateEventController().handle);
+studentGroupRoutes.delete('/:studentGroupId/events/:eventId', isGroupMember, new DeleteEventController().handle);
 
 studentGroupRoutes.post('/:studentGroupId/posts', isGroupMember, createPostController.handle);
 studentGroupRoutes.get('/:studentGroupId/posts', isGroupMember, listPostsController.handle);
 
 studentGroupRoutes.post('/:studentGroupId/materials', isGroupMember, createMaterialController.handle);
 studentGroupRoutes.get('/:studentGroupId/materials', isGroupMember, listMaterialsController.handle);
+studentGroupRoutes.put('/:studentGroupId/materials/:materialId', isGroupMember, new UpdateMaterialController().handle);
+studentGroupRoutes.delete('/:studentGroupId/materials/:materialId', isGroupMember, new DeleteMaterialController().handle);
 
 export { studentGroupRoutes };

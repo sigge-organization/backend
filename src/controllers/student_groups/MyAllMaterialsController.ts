@@ -9,9 +9,12 @@ class MyAllMaterialsController {
       return res.status(401).json({ error: 'Usuário não autenticado.' });
     }
 
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 20;
+
     const myAllMaterialsService = new MyAllMaterialsService();
 
-    const materials = await myAllMaterialsService.execute(user_id);
+    const materials = await myAllMaterialsService.execute(user_id, page, limit);
 
     return res.json(materials);
   }

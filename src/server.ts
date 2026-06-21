@@ -60,3 +60,16 @@ server.listen(PORT, () => {
     console.log(`Link local: http://localhost:${PORT}`);
   }
 });
+
+function gracefulShutdown() {
+  console.log('🔄 Desligando o servidor...');
+  io.close(() => {
+    server.close(() => {
+      console.log('✅ Servidor desligado com sucesso.');
+      process.exit(0);
+    });
+  });
+}
+
+process.on('SIGTERM', gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
