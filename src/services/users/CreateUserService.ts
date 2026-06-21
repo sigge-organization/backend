@@ -9,6 +9,14 @@ export class CreateUserService {
   }
 
   async execute({ name, email, password, course }: CreateUserDTO) {
+    if (!name || name.length < 3 || name.length > 100) {
+      throw new Error("O nome deve ter entre 3 e 100 caracteres.");
+    }
+
+    if (course && course.length > 100) {
+      throw new Error("O curso deve ter no máximo 100 caracteres.");
+    }
+
     const userAlreadyExists = await this.repository.findByEmail(email);
 
     if (userAlreadyExists) {

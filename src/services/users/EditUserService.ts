@@ -21,7 +21,7 @@ export class EditUserService {
 
     const data: any = {};
 
-    if (name) {
+    if (name !== undefined) {
       if (name.length < 3 || name.length > 100) {
         throw new Error("O nome deve ter entre 3 e 100 caracteres.");
       }
