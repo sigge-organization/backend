@@ -21,8 +21,19 @@ export class EditUserService {
 
     const data: any = {};
 
-    if (name) data.name = name;
-    if (course !== undefined) data.course = course;
+    if (name) {
+      if (name.length < 3 || name.length > 100) {
+        throw new Error("O nome deve ter entre 3 e 100 caracteres.");
+      }
+      data.name = name;
+    }
+    
+    if (course !== undefined) {
+      if (course && course.length > 100) {
+        throw new Error("O curso deve ter no máximo 100 caracteres.");
+      }
+      data.course = course;
+    }
     
     if (email && email !== user.email) {
       const emailExists = await prisma.users.findUnique({
