@@ -4,9 +4,9 @@
   "description": "This is project SIGGE",
   "main": "server.ts",
   "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "dev": "npx prisma migrate dev && ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "npx prisma migrate deploy && node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Luiz Felipe & Jhonnatas Jorge",
