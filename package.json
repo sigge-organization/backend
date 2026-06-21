@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npx prisma migrate dev && ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "npx prisma generate && tsc",
-    "start": "npx prisma migrate deploy && node dist/server.js",
+    "start": "npx prisma migrate deploy && node dist/src/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Luiz Felipe & Jhonnatas Jorge",
