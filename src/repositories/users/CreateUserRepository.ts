@@ -1,5 +1,5 @@
 import { prisma } from './AuthUserRepository'; // Reaproveitando a instância do prisma
-import { Users } from '../../generated/prisma';
+import { Users } from '@prisma/client';
 
 export interface CreateUserDTO {
   name?: string;

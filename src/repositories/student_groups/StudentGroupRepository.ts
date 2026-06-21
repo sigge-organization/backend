@@ -1,4 +1,4 @@
-import { PrismaClient, Modality } from '../../generated/prisma';
+import { PrismaClient, Modality } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export interface CreateStudentGroupDTO {

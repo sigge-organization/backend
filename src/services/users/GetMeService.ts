@@ -1,4 +1,4 @@
-import { Users } from '../../generated/prisma';
+import { Users } from '@prisma/client';
 import { prisma } from '../../repositories/users/AuthUserRepository';
 
 
