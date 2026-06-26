@@ -46,7 +46,7 @@ describe('ListMaterialsService', () => {
 
     await service.execute('group-abc');
 
-    expect(repository.findByGroupId).toHaveBeenCalledWith('group-abc');
+    expect(repository.findByGroupId).toHaveBeenCalledWith('group-abc', 1, 20);
     expect(repository.findByGroupId).toHaveBeenCalledOnce();
   });
 
